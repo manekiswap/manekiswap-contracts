@@ -3,7 +3,7 @@
 
 ## License
 
-[MIT](LICENSE)
+[GPG-3](LICENSE)
 
 ## Security
 
