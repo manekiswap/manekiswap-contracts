@@ -1,45 +1,63 @@
 {
   "name": "manekiswap-contracts",
   "version": "1.0.0",
-  "description": "ManekiSwap Contracts",
-  "repository": "https://github.com/manekiswap/manekiswap-contracts.git",
-  "author": "ManekiSwap",
-  "license": "GPL-3.0-or-later",
+  "description": "Contracts for the maneki protocol",
   "scripts": {
-    "compile": "hardhat compile",
-    "test": "hardhat test"
+    "server": "npx hardhat node",
+    "build": "npm run clean && npm run compile",
+    "clean": "npx hardhat clean",
+    "test": "TS_NODE_TRANSPILE_ONLY=1 npx hardhat test",
+    "compile": "npx hardhat compile",
+    "ropsten:deploy": "hardhat run --network ropsten scripts/deploy_maneki.ts",
+    "ropsten:verify": "hardhat run --network ropsten etherscan-verify",
+    "rinkeby:deploy": "hardhat run --network rinkeby scripts/deploy_maneki.ts",
+    "rinkeby:verify": "hardhat run --network rinkeby etherscan-verify ",
+    "kovan:deploy": "hardhat run --network rinkeby scripts/deploy_maneki.ts",
+    "kovan:verify": "hardhat run --network rinkeby etherscan-verify ",
+    "local:deploy": "hardhat run --network localhost scripts/deploy_maneki.ts",
+    "script": "hardhat run --network localhost scripts/index.ts"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "2.0.2",
     "@nomiclabs/hardhat-etherscan": "2.1.2",
     "@nomiclabs/hardhat-waffle": "2.0.1",
+    "@openzeppelin/contracts": "3.4.1-solc-0.7",
+    "@openzeppelin/contracts-upgradeable": "3.4.1-solc-0.7",
     "@openzeppelin/hardhat-upgrades": "1.8.2",
-    "@typechain/ethers-v5": "7.0.0",
-    "@typechain/hardhat": "2.0.1",
-    "@types/chai": "4.2.18",
+    "@openzeppelin/test-environment": "0.1.9",
+    "@openzeppelin/test-helpers": "0.5.11",
+    "@typechain/ethers-v5": "7.0.1",
+    "@typechain/hardhat": "2.0.2",
     "@types/mocha": "8.2.2",
-    "@types/node": "15.6.1",
     "chai": "4.3.4",
-    "decimal.js": "10.2.1",
-    "ethereum-waffle": "3.3.0",
-    "ethers": "5.2.0",
+    "dotenv": "10.0.0",
+    "ethers": "5.3.1",
     "hardhat": "2.3.0",
-    "mocha": "8.4.0",
-    "mocha-chai-jest-snapshot": "1.1.2",
-    "prettier": "2.3.0",
-    "prettier-plugin-solidity": "1.0.0-beta.11",
+    "hardhat-deploy": "0.7.11",
+    "hardhat-deploy-ethers": "0.3.0-beta.10",
+    "hardhat-preprocessor": "0.1.4",
+    "hardhat-typechain": "0.3.5",
+    "prettier": "2.3.1",
+    "prettier-plugin-solidity": "1.0.0-beta.13",
     "solhint": "3.3.6",
-    "solhint-plugin-prettier": "0.0.5",
     "ts-generator": "0.1.1",
     "ts-node": "10.0.0",
     "typechain": "5.0.0",
     "typescript": "4.3.2"
   },
-  "engines": {
-    "node": ">=10"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manekiswap/manekiswap-contracts.git"
   },
+  "keywords": [],
+  "author": "croccifixio-maneki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/manekiswap/manekiswap-contracts/issues"
+  },
+  "homepage": "https://github.com/manekiswap/manekiswap-contracts#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "3.4.1-solc-0.7",
-    "@openzeppelin/contracts-upgradeable": "3.4.1-solc-0.7"
+    "mnemonic": "1.0.1",
+    "mnemonics": "1.1.3"
   }
 }
