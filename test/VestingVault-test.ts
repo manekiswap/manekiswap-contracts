@@ -15,8 +15,10 @@ describe.only('Test vesting by maneki token', async function () {
   let value = ethers.utils.parseEther('10')
   let vestingContract: VestingVault
   beforeEach(async function () {
-    ;[owner, admin, user, miner, burner] = await ethers.getSigners()
+    [owner, admin, user, miner, burner] = await ethers.getSigners()
+
     let mnkFactory = await ethers.getContractFactory('ManekiToken')
+
     let cap = ethers.utils.parseEther('30000000')
 
     mvkToken = (await upgrades.deployProxy(mnkFactory, [cap], {

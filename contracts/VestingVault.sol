@@ -3,11 +3,13 @@ pragma solidity 0.7.6;
 /*
 Original work taken from https://github.com/tapmydata/tap-protocol/blob/751713ad575f6b4e5748dff7df24062533895c06/contracts/VestingVault.sol
 */
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract VestingVault is Ownable {
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
+
+contract VestingVault is OwnableUpgradeable {
     using SafeMath for uint256;
     using SafeMath for uint16;
 
@@ -24,14 +26,15 @@ contract VestingVault is Ownable {
     event GrantTokensClaimed(address indexed recipient, uint256 amountClaimed);
     event GrantRevoked(address recipient, uint256 amountVested, uint256 amountNotVested);
 
-    ERC20 public token;
+    ERC20Upgradeable public token;
 
     mapping (address => Grant) private tokenGrants;
 
     uint256 public totalVestingCount;
 
-    constructor(ERC20 _token) public {
+    function initialize(ERC20Upgradeable _token) public initializer  {
         require(address(_token) != address(0));
+        __Ownable_init();
         token = _token;
     }
 
