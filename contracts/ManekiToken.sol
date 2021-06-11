@@ -19,8 +19,6 @@ contract ManekiToken is ERC20PresetMinterPauserUpgradeable {
         require(cap_ > 0, "ERC20Capped: cap is 0");
         _cap = cap_;
         __ERC20PresetMinterPauser_init("ManekiToken", "MNK");
-
-        console.log("Deploy with cap: ", cap_);
     }
 
     /**
