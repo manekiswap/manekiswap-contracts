@@ -11,11 +11,12 @@ contract ManekiToken is ERC20PresetMinterPauserUpgradeable {
     using SafeMath for uint256;
 
     uint256 private _cap;
+
     /**
      * @dev Sets the value of the `cap`. This value is immutable, it can only be
      * set once during construction.
      */
-    function initialize(uint256 cap_) public initializer  {
+    function initialize(uint256 cap_) public initializer {
         require(cap_ > 0, "ERC20Capped: cap is 0");
         _cap = cap_;
         __ERC20PresetMinterPauser_init("ManekiToken", "MNK");
@@ -35,10 +36,15 @@ contract ManekiToken is ERC20PresetMinterPauserUpgradeable {
      *
      * - minted tokens must not cause the total supply to go over the cap.
      */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual override {
         super._beforeTokenTransfer(from, to, amount);
 
-        if (from == address(0)) { // When minting tokens
+        if (from == address(0)) {
+            // When minting tokens
             require(totalSupply().add(amount) <= cap(), "ERC20Capped: cap exceeded");
         }
     }

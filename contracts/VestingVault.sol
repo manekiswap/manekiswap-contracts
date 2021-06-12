@@ -28,11 +28,11 @@ contract VestingVault is OwnableUpgradeable {
 
     ERC20Upgradeable public token;
 
-    mapping (address => Grant) private tokenGrants;
+    mapping(address => Grant) private tokenGrants;
 
     uint256 public totalVestingCount;
 
-    function initialize(ERC20Upgradeable _token) public initializer  {
+    function initialize(ERC20Upgradeable _token) public initializer {
         require(address(_token) != address(0));
         __Ownable_init();
         token = _token;
@@ -43,13 +43,10 @@ contract VestingVault is OwnableUpgradeable {
         uint256 _amount,
         uint16 _vestingDurationInDays,
         uint16 _vestingCliffInDays
-    )
-        external
-        onlyOwner
-    {
+    ) external onlyOwner {
         require(tokenGrants[_recipient].amount == 0, "Grant already exists, must revoke first.");
-        require(_vestingCliffInDays <= 10*365, "Cliff greater than 10 years");
-        require(_vestingDurationInDays <= 25*365, "Duration greater than 25 years");
+        require(_vestingCliffInDays <= 10 * 365, "Cliff greater than 10 years");
+        require(_vestingDurationInDays <= 25 * 365, "Duration greater than 25 years");
 
         uint256 amountVestedPerDay = _amount.div(_vestingDurationInDays);
         require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
@@ -88,10 +85,7 @@ contract VestingVault is OwnableUpgradeable {
     /// and returning all non-vested tokens to the contract owner
     /// Secured to the contract owner only
     /// @param _recipient address of the token grant recipient
-    function revokeTokenGrant(address _recipient)
-        external
-        onlyOwner
-    {
+    function revokeTokenGrant(address _recipient) external onlyOwner {
         Grant storage tokenGrant = tokenGrants[_recipient];
         uint16 daysVested;
         uint256 amountVested;
@@ -112,12 +106,12 @@ contract VestingVault is OwnableUpgradeable {
         emit GrantRevoked(_recipient, amountVested, amountNotVested);
     }
 
-    function getGrantStartTime(address _recipient) public view returns(uint256) {
+    function getGrantStartTime(address _recipient) public view returns (uint256) {
         Grant storage tokenGrant = tokenGrants[_recipient];
         return tokenGrant.startTime;
     }
 
-    function getGrantAmount(address _recipient) public view returns(uint256) {
+    function getGrantAmount(address _recipient) public view returns (uint256) {
         Grant storage tokenGrant = tokenGrants[_recipient];
         return tokenGrant.amount;
     }
@@ -136,7 +130,7 @@ contract VestingVault is OwnableUpgradeable {
         }
 
         // Check cliff was reached
-        uint elapsedDays = currentTime().sub(tokenGrant.startTime - 1 days).div(1 days);
+        uint256 elapsedDays = currentTime().sub(tokenGrant.startTime - 1 days).div(1 days);
 
         // If over vesting duration, all tokens vested
         if (elapsedDays >= tokenGrant.vestingDuration) {
@@ -150,7 +144,7 @@ contract VestingVault is OwnableUpgradeable {
         }
     }
 
-    function currentTime() private view returns(uint256) {
+    function currentTime() private view returns (uint256) {
         return block.timestamp;
     }
 }

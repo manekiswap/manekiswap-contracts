@@ -1,20 +1,19 @@
-import { config as dotEnvConfig } from "dotenv";
-dotEnvConfig();
+import { config as dotEnvConfig } from "dotenv"
+dotEnvConfig()
 
-import { HardhatUserConfig } from "hardhat/types";
-import "@nomiclabs/hardhat-waffle";
-import "@openzeppelin/hardhat-upgrades";
-import "@typechain/hardhat";
-import "hardhat-deploy";
-import "@nomiclabs/hardhat-etherscan";
+import { HardhatUserConfig } from "hardhat/types"
+import "@nomiclabs/hardhat-waffle"
+import "@openzeppelin/hardhat-upgrades"
+import "@typechain/hardhat"
+import "hardhat-deploy"
+import "@nomiclabs/hardhat-etherscan"
 
-const ROPSTEN_PROJECT_ID = process.env.ROPSTEN_PROJECT_ID || "";
-const KOVAN_PROJECT_ID = process.env.KOVAN_PROJECT_ID || "";
-const RINKEBY_PROJECT_ID = process.env.RINKEBY_PROJECT_ID || "";
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+const ROPSTEN_PROJECT_ID = process.env.ROPSTEN_PROJECT_ID || ""
+const KOVAN_PROJECT_ID = process.env.KOVAN_PROJECT_ID || ""
+const RINKEBY_PROJECT_ID = process.env.RINKEBY_PROJECT_ID || ""
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY
 
-
-const MNEMONIC = process.env.MNEMONIC || "test gesture common unveil oxygen gauge fury outside steel team february test";
+const MNEMONIC = process.env.MNEMONIC || "test gesture common unveil oxygen gauge fury outside steel team february test"
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
@@ -29,12 +28,12 @@ const config: HardhatUserConfig = {
         // do not include the metadata hash, since this is machine dependent
         // and we want all generated code to be deterministic
         // https://docs.soliditylang.org/en/v0.7.6/metadata.html
-        bytecodeHash: 'none',
+        bytecodeHash: "none",
       },
     },
   },
   paths: {
-    artifacts: './src/artifacts',
+    artifacts: "./src/artifacts",
     cache: "cache",
     deployments: "deployments",
     imports: "imports",
@@ -42,7 +41,7 @@ const config: HardhatUserConfig = {
     tests: "test",
   },
   typechain: {
-    outDir: './src/typechain',
+    outDir: "./src/typechain",
   },
   networks: {
     hardhat: {},
@@ -75,6 +74,6 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
   },
-};
+}
 
 export default config
