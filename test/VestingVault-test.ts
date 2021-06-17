@@ -1,24 +1,22 @@
 import { ethers, upgrades } from "hardhat"
 import { ManekiToken, VestingVault } from "../src/typechain"
+import { increase, duration } from "./util"
 
 import { expect, use } from "chai"
 import { BN, expectEvent, expectRevert, constants } from "@openzeppelin/test-helpers"
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
-import { accounts, contract } from "@openzeppelin/test-environment"
 
-describe("Test vesting by maneki token", async function () {
+describe.only("Test vesting by maneki token", async function () {
   let mnkToken: ManekiToken
   let owner: SignerWithAddress
-  let admin: SignerWithAddress
   let alice: SignerWithAddress
   let bob: SignerWithAddress
-  let value = ethers.utils.parseEther("12")
   let vestingContract: VestingVault
-  let cap = ethers.utils.parseEther("30000002")
-  let allow = ethers.utils.parseEther("1002")
+  let cap = ethers.utils.parseUnits("100000000")
+  let initSupply = ethers.utils.parseUnits("15000000")
 
   beforeEach(async function () {
-    ;[owner, admin, alice, bob] = await ethers.getSigners()
+    ;[owner, alice, bob] = await ethers.getSigners()
 
     let mnkFactory = await ethers.getContractFactory("ManekiToken")
     mnkToken = (await upgrades.deployProxy(mnkFactory, [cap], {
@@ -33,21 +31,62 @@ describe("Test vesting by maneki token", async function () {
 
     await vestingContract.deployed()
 
-    await mnkToken.mint(owner.address, allow)
-
-    console.log("Allowance before: ", (await mnkToken.allowance(owner.address, vestingContract.address)).toString())
-    // await mnkToken.approve(vestingContract.address, allow)
-    // console.log("Allowance after: ", (await mnkToken.allowance(owner.address, vestingContract.address)).toString())
-
-    await mnkToken.increaseAllowance(vestingContract.address, allow)
-    console.log("Allowance after increase allow: ", (await mnkToken.allowance(owner.address, vestingContract.address)).toString())
+    await mnkToken.mint(owner.address, initSupply)
   })
-  //
 
-  let grant = ethers.utils.parseEther("10")
-  it("should emit event on grant", async function () {
-    await vestingContract.addTokenGrant(alice.address, allow, 10, 10)
-    let grantAllow = await vestingContract.getGrantAmount(alice.address)
-    console.log("Graned: ", grantAllow.toString())
+  it("should NOT allow to grant token from vesting vault", async function () {
+    expectRevert(vestingContract.addTokenGrant(alice.address, initSupply, 10, 10), "ERC20: transfer amount exceeds allowance")
+  })
+
+  it("should allow to GRANT token from vesting vault", async function () {
+    await mnkToken.approve(vestingContract.address, initSupply)
+    await vestingContract.addTokenGrant(alice.address, initSupply.div(2), 10, 10)
+    let grantForAlice = await vestingContract.getGrantAmount(alice.address)
+
+    expect(ethers.utils.formatUnits(grantForAlice)).to.equal("7500000.0")
+
+    let grantForBob = await vestingContract.getGrantAmount(bob.address)
+    expect(ethers.utils.formatUnits(grantForBob)).to.equal("0.0")
+  })
+
+  it("should allow to REVOKE granted", async function () {
+    await mnkToken.approve(vestingContract.address, initSupply)
+    await vestingContract.addTokenGrant(alice.address, initSupply.div(2), 10, 10)
+    let grantForAlice = await vestingContract.getGrantAmount(alice.address)
+
+    expect(ethers.utils.formatUnits(grantForAlice)).to.equal("7500000.0")
+
+    await vestingContract.revokeTokenGrant(alice.address)
+    grantForAlice = await vestingContract.getGrantAmount(alice.address)
+    expect(ethers.utils.formatUnits(grantForAlice)).to.equal("0.0")
+  })
+
+  it("should allow to claims granted", async function () {
+    await mnkToken.approve(vestingContract.address, initSupply)
+    await vestingContract.addTokenGrant(alice.address, initSupply.div(2), 10, 10)
+    let grantForAlice = await vestingContract.getGrantAmount(alice.address)
+
+    let granted = "7500000.0"
+    expect(ethers.utils.formatUnits(grantForAlice)).to.equal(granted)
+
+    await increase(duration.days(4))
+
+    vestingContract = vestingContract.connect(alice)
+    expectRevert(vestingContract.claimVestedTokens(), "Vested is 0")
+
+    let beforeVested = await mnkToken.balanceOf(alice.address)
+    expect(ethers.utils.formatUnits(beforeVested)).to.equal("0.0")
+
+    await increase(duration.days(6))
+
+    await vestingContract.claimVestedTokens()
+    let afterVested = await mnkToken.balanceOf(alice.address)
+    expect(ethers.utils.formatUnits(afterVested)).to.equal("750000.0")
+
+    await increase(duration.days(10))
+
+    await vestingContract.claimVestedTokens()
+    afterVested = await mnkToken.balanceOf(alice.address)
+    expect(ethers.utils.formatUnits(afterVested)).to.equal("7500000.0")
   })
 })
