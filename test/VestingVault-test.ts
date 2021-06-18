@@ -7,14 +7,14 @@ import { BN, expectEvent, expectRevert, constants } from "@openzeppelin/test-hel
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { ContractFactory } from "@ethersproject/contracts"
 
-describe.only("Test vesting by maneki token", async function () {
+describe("Test vesting by maneki token", async function () {
   let maneki: ManekiToken
   let owner: SignerWithAddress
   let alice: SignerWithAddress
   let bob: SignerWithAddress
   let vault: VestingVault
-  let cap = ethers.utils.parseUnits("100000000")
-  let initSupply = ethers.utils.parseUnits("15000000")
+  let cap = ethers.utils.parseUnits("100000000") // 100M
+  let initSupply = ethers.utils.parseUnits("15000000") // 15M
 
   let granted = "1000000.0"
   let durationInDays = 10
@@ -77,12 +77,11 @@ describe.only("Test vesting by maneki token", async function () {
     expect(ethers.utils.formatUnits(grantForAlice)).to.equal(granted, "should be equal granted value")
 
     await increase(duration.days(durationInDays))
-    vault = vault.connect(alice)
 
     let beforeClaim = await maneki.balanceOf(alice.address)
     expect("0.0").to.equal(ethers.utils.formatUnits(beforeClaim), "should be zero")
 
-    await vault.claimVestedTokens()
+    await vault.claimVestedTokens(alice.address)
     let afterClaim = await maneki.balanceOf(alice.address)
     expect(granted).to.equal(ethers.utils.formatUnits(afterClaim), "should be all the granted")
   })
@@ -92,14 +91,13 @@ describe.only("Test vesting by maneki token", async function () {
     await vault.addTokenGrant(alice.address, ethers.utils.parseUnits(granted), durationInDays, cliff)
     let grantForAlice = await vault.getGrantAmount(alice.address)
 
-    vault = vault.connect(alice)
     expect(ethers.utils.formatUnits(grantForAlice)).to.equal(granted, "should be equal granted value")
 
     await increase(duration.days(1))
-    await expectRevert(vault.claimVestedTokens(), "amountVested is 0")
+    await expectRevert(vault.claimVestedTokens(alice.address), "amountVested is 0")
 
     await increase(duration.days(1))
-    await vault.claimVestedTokens()
+    await vault.claimVestedTokens(alice.address)
 
     let balance = await maneki.balanceOf(alice.address)
     expect(ethers.utils.formatUnits(balance)).to.equal("200000.0", "Should vest 20%")

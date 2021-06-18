@@ -13,7 +13,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 import "hardhat/console.sol";
 
-contract VestingVault is OwnableUpgradeable {
+contract VestingVaultUnsafe is OwnableUpgradeable {
     using SafeMath for uint256;
     using SafeMath for uint16;
     uint256 internal constant SECONDS_PER_DAY = 86400;
@@ -70,6 +70,50 @@ contract VestingVault is OwnableUpgradeable {
         // Transfer the grant tokens under the control of the vesting contract
         require(token.transferFrom(owner(), address(this), _amount));
         emit GrantAdded(_recipient);
+    }
+
+    /// @notice same as addTokenGrant however not transer granted token to this vesting contract yet
+    function addTokenGrantUnsafe(
+        address _recipient,
+        uint256 _amount,
+        uint16 _vestingDurationInDays,
+        uint16 _vestingCliffInDays
+    ) external onlyOwner {
+        require(tokenGrants[_recipient].amount == 0, "Grant already exists, must revoke first.");
+        require(_vestingCliffInDays <= 10 * 365, "Cliff greater than 10 years");
+        require(_vestingDurationInDays <= 25 * 365, "Duration greater than 25 years");
+
+        uint256 amountVestedPerDay = _amount.div(_vestingDurationInDays);
+        require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
+
+        Grant memory grant = Grant({
+            startTime: currentTime(),
+            amount: _amount,
+            vestingDuration: _vestingDurationInDays,
+            vestingCliff: _vestingCliffInDays,
+            daysClaimed: 0,
+            totalClaimed: 0,
+            recipient: _recipient
+        });
+        tokenGrants[_recipient] = grant;
+        emit GrantAdded(_recipient);
+    }
+
+    /// @notice Allows a grant recipient to claim their vested tokens. Errors if no tokens have vested
+    function claimVestedTokensUnsafe(address _recipient) external onlyOwner {
+        uint16 daysVested;
+        uint256 amountVested;
+        (daysVested, amountVested) = calculateGrantClaim(_recipient);
+        require(amountVested > 0, "amountVested is 0");
+
+        Grant storage tokenGrant = tokenGrants[_recipient];
+        tokenGrant.daysClaimed = uint16(tokenGrant.daysClaimed.add(daysVested));
+        tokenGrant.totalClaimed = uint256(tokenGrant.totalClaimed.add(amountVested));
+
+        require(token.transferFrom(owner(), address(this), tokenGrant.amount));
+
+        require(token.transfer(tokenGrant.recipient, amountVested), "no tokens");
+        emit GrantTokensClaimed(tokenGrant.recipient, amountVested);
     }
 
     /// @notice Allows a grant recipient to claim their vested tokens. Errors if no tokens have vested
