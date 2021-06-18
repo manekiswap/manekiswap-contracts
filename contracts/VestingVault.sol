@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.7.6;
 /*
-Original work taken from https://github.com/tapmydata/tap-protocol/blob/751713ad575f6b4e5748dff7df24062533895c06/contracts/VestingVault.sol
+Original work taken from https://github.com/tapmydata/tap-protocol/blob/main/contracts/VestingVault.sol
+Has been amended to use openzepplin OwnableUpgradeable and include cliff in to vesting amount and original 
+implement in:
+https://gist.github.com/rstormsf/7cfb0c6b7a835c0c67b4a394b4fd9383#file-vesting-sol
 */
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
@@ -12,11 +15,12 @@ import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 contract VestingVault is OwnableUpgradeable {
     using SafeMath for uint256;
     using SafeMath for uint16;
-
+    uint256 internal constant SECONDS_PER_DAY = 86400;
     struct Grant {
         uint256 startTime;
         uint256 amount;
         uint16 vestingDuration;
+        uint16 vestingCliff;
         uint16 daysClaimed;
         uint256 totalClaimed;
         address recipient;
@@ -55,9 +59,10 @@ contract VestingVault is OwnableUpgradeable {
         require(token.transferFrom(owner(), address(this), _amount));
 
         Grant memory grant = Grant({
-            startTime: currentTime() + _vestingCliffInDays * 1 days,
+            startTime: currentTime(),
             amount: _amount,
             vestingDuration: _vestingDurationInDays,
+            vestingCliff: _vestingCliffInDays,
             daysClaimed: 0,
             totalClaimed: 0,
             recipient: _recipient
@@ -71,7 +76,7 @@ contract VestingVault is OwnableUpgradeable {
         uint16 daysVested;
         uint256 amountVested;
         (daysVested, amountVested) = calculateGrantClaim(msg.sender);
-        require(amountVested > 0, "Vested is 0");
+        require(amountVested > 0, "amountVested is 0");
 
         Grant storage tokenGrant = tokenGrants[msg.sender];
         tokenGrant.daysClaimed = uint16(tokenGrant.daysClaimed.add(daysVested));
@@ -130,18 +135,22 @@ contract VestingVault is OwnableUpgradeable {
         }
 
         // Check cliff was reached
-        uint256 elapsedDays = currentTime().sub(tokenGrant.startTime - 1 days).div(1 days);
+        uint256 elapsedTime = currentTime().sub(tokenGrant.startTime);
+        uint256 elapsedDays = elapsedTime.div(SECONDS_PER_DAY);
 
+        if (elapsedDays < tokenGrant.vestingCliff) {
+            return (uint16(elapsedDays), 0);
+        }
         // If over vesting duration, all tokens vested
         if (elapsedDays >= tokenGrant.vestingDuration) {
             uint256 remainingGrant = tokenGrant.amount.sub(tokenGrant.totalClaimed);
             return (tokenGrant.vestingDuration, remainingGrant);
-        } else {
-            uint16 daysVested = uint16(elapsedDays.sub(tokenGrant.daysClaimed));
-            uint256 amountVestedPerDay = tokenGrant.amount.div(uint256(tokenGrant.vestingDuration));
-            uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
-            return (daysVested, amountVested);
         }
+
+        uint16 daysVested = uint16(elapsedDays.sub(tokenGrant.daysClaimed));
+        uint256 amountVestedPerDay = tokenGrant.amount.div(uint256(tokenGrant.vestingDuration));
+        uint256 amountVested = uint256(daysVested.mul(amountVestedPerDay));
+        return (daysVested, amountVested);
     }
 
     function currentTime() private view returns (uint256) {
