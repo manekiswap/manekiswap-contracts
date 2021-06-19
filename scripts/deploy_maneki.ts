@@ -3,7 +3,7 @@ import { ethers, upgrades } from "hardhat"
 async function main() {
   const factory = await ethers.getContractFactory("ManekiToken")
   console.log("Deploying proxy...")
-  let cap = ethers.utils.parseEther("30000000")
+  let cap = ethers.utils.parseUnits("100000000")
   let contract = await upgrades.deployProxy(factory, [cap], { initializer: "initialize(uint256)" })
 
   await contract.deployed()
@@ -13,6 +13,7 @@ async function main() {
   let vestingContract = await upgrades.deployProxy(vestingFactory, [contract.address], {
     initializer: "initialize(address)",
   })
+  await vestingContract.deployed()
 
   console.log("Proxy vesting address: ", vestingContract.address)
 }
