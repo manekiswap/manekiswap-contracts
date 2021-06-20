@@ -72,6 +72,68 @@ contract VestingVault is OwnableUpgradeable {
         emit GrantAdded(_recipient);
     }
 
+    function addTokenGrantWithStartTime(
+        uint256 _startTime,
+        address _recipient,
+        uint256 _amount,
+        uint16 _vestingDurationInDays,
+        uint16 _vestingCliffInDays
+    ) external onlyOwner {
+        require(tokenGrants[_recipient].amount == 0, "Grant already exists, must revoke first.");
+        require(_vestingCliffInDays <= 10 * 365, "Cliff greater than 10 years");
+        require(_vestingDurationInDays <= 25 * 365, "Duration greater than 25 years");
+
+        uint256 amountVestedPerDay = _amount.div(_vestingDurationInDays);
+        require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
+
+        Grant memory grant = Grant({
+            startTime: _startTime == 0 ? currentTime() : _startTime,
+            amount: _amount,
+            vestingDuration: _vestingDurationInDays,
+            vestingCliff: _vestingCliffInDays,
+            daysClaimed: 0,
+            totalClaimed: 0,
+            recipient: _recipient
+        });
+        tokenGrants[_recipient] = grant;
+
+        // Transfer the grant tokens under the control of the vesting contract
+        require(token.transferFrom(owner(), address(this), _amount));
+        emit GrantAdded(_recipient);
+    }
+
+    function addTokenGrantWithEndTime(
+        uint256 _endTime,
+        address _recipient,
+        uint256 _amount,
+        uint16 _vestingDurationInDays,
+        uint16 _vestingCliffInDays
+    ) external onlyOwner {
+        require(tokenGrants[_recipient].amount == 0, "Grant already exists, must revoke first.");
+        require(_vestingCliffInDays <= 10 * 365, "Cliff greater than 10 years");
+        require(_vestingDurationInDays <= 25 * 365, "Duration greater than 25 years");
+
+        uint256 amountVestedPerDay = _amount.div(_vestingDurationInDays);
+        require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
+
+        uint256 elapsedTime = _endTime.sub(_vestingDurationInDays * SECONDS_PER_DAY);
+
+        Grant memory grant = Grant({
+            startTime: elapsedTime,
+            amount: _amount,
+            vestingDuration: _vestingDurationInDays,
+            vestingCliff: _vestingCliffInDays,
+            daysClaimed: 0,
+            totalClaimed: 0,
+            recipient: _recipient
+        });
+        tokenGrants[_recipient] = grant;
+
+        // Transfer the grant tokens under the control of the vesting contract
+        require(token.transferFrom(owner(), address(this), _amount));
+        emit GrantAdded(_recipient);
+    }
+
     /// @notice Allows a grant recipient to claim their vested tokens. Errors if no tokens have vested
     function claimVestedTokens(address _recipient) external onlyOwner {
         uint16 daysVested;

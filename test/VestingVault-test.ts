@@ -102,4 +102,40 @@ describe("Test vesting by maneki token", async function () {
     let balance = await maneki.balanceOf(alice.address)
     expect(ethers.utils.formatUnits(balance)).to.equal("200000.0", "Should vest 20%")
   })
+
+  it.only("should allow to grant with start time", async function () {
+    await maneki.approve(vault.address, initSupply)
+    let startTime = Date.parse("2020-12-19T00:00:00.000Z").valueOf() / 1000 // in seconds
+
+    await vault.addTokenGrantWithStartTime(startTime, alice.address, ethers.utils.parseUnits(granted), 180, 180)
+
+    let grantForAlice = ethers.utils.formatUnits(await vault.getGrantAmount(alice.address))
+    expect(grantForAlice).to.equal(granted, "should be equal granted value")
+
+    let startTimeAlice = await vault.getGrantStartTime(alice.address)
+    expect(startTimeAlice.toNumber()).to.equal(startTime, "should be equal start time")
+
+    await vault.claimVestedTokens(alice.address)
+    let balance = await maneki.balanceOf(alice.address)
+    expect(ethers.utils.formatUnits(balance)).to.equal(grantForAlice, "Should vest 100%")
+  })
+
+  it.only("should allow to grant with end time", async function () {
+    await maneki.approve(vault.address, initSupply)
+    let endTime = Date.parse("2021-06-18T00:00:00.000Z").valueOf() / 1000 // in seconds 1623974400
+
+    console.log("End time ", endTime)
+    await vault.addTokenGrantWithEndTime(endTime, alice.address, ethers.utils.parseUnits(granted), 180, 180)
+
+    let grantForAlice = ethers.utils.formatUnits(await vault.getGrantAmount(alice.address))
+    expect(grantForAlice).to.equal(granted, "should be equal granted value")
+
+    let startTimeAlice = await vault.getGrantStartTime(alice.address)
+    let expectStartTime = 1608422400
+    expect(startTimeAlice.toNumber()).to.equal(expectStartTime, "should be equal start time") /// 1623974400 - (180 * 24 * 3600) => 1608422400
+
+    await vault.claimVestedTokens(alice.address)
+    let balance = await maneki.balanceOf(alice.address)
+    expect(ethers.utils.formatUnits(balance)).to.equal(grantForAlice, "Should vest 100%")
+  })
 })
