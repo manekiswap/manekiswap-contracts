@@ -3,9 +3,9 @@ import { ManekiToken, VestingVault } from "../src/typechain"
 import { increase, duration } from "./util"
 
 import { expect, use } from "chai"
-import { BN, expectEvent, expectRevert, constants } from "@openzeppelin/test-helpers"
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { ContractFactory } from "@ethersproject/contracts"
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
+import { BN, expectRevert } from "@openzeppelin/test-helpers"
 
 describe("Test vesting by maneki token", async function () {
   let maneki: ManekiToken
@@ -42,11 +42,11 @@ describe("Test vesting by maneki token", async function () {
     await maneki.mint(owner.address, initSupply)
   })
 
-  it("should NOT allow to grant token from vesting vault", async function () {
+  it.only("should NOT allow to grant token from vesting vault", async function () {
     await expectRevert(vault.addTokenGrant(alice.address, initSupply, 10, 10), "ERC20: transfer amount exceeds allowance")
   })
 
-  it("should allow to GRANT token from vesting vault", async function () {
+  it.only("should allow to GRANT token from vesting vault", async function () {
     await maneki.approve(vault.address, initSupply)
     await vault.addTokenGrant(alice.address, initSupply.div(2), 10, 10)
     let grantForAlice = await vault.getGrantAmount(alice.address)
@@ -57,7 +57,7 @@ describe("Test vesting by maneki token", async function () {
     expect(ethers.utils.formatUnits(grantForBob)).to.equal("0.0")
   })
 
-  it("should allow to REVOKE granted", async function () {
+  it.only("should allow to REVOKE granted", async function () {
     await maneki.approve(vault.address, initSupply)
     await vault.addTokenGrant(alice.address, initSupply.div(2), 10, 10)
     let grantForAlice = await vault.getGrantAmount(alice.address)
@@ -69,7 +69,7 @@ describe("Test vesting by maneki token", async function () {
     expect(ethers.utils.formatUnits(grantForAlice)).to.equal("0.0")
   })
 
-  it("should allow to claims granted when vest ALL", async function () {
+  it.only("should allow to claims granted when vest ALL", async function () {
     await maneki.approve(vault.address, initSupply)
     await vault.addTokenGrant(alice.address, ethers.utils.parseUnits(granted), durationInDays, cliff)
 
@@ -86,7 +86,7 @@ describe("Test vesting by maneki token", async function () {
     expect(granted).to.equal(ethers.utils.formatUnits(afterClaim), "should be all the granted")
   })
 
-  it("should allow to claims during the vesting", async function () {
+  it.only("should allow to claims during the vesting", async function () {
     await maneki.approve(vault.address, initSupply)
     await vault.addTokenGrant(alice.address, ethers.utils.parseUnits(granted), durationInDays, cliff)
     let grantForAlice = await vault.getGrantAmount(alice.address)
