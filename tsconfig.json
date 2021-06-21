@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ESNext",
     "module": "commonjs",
     "strict": false,
     "esModuleInterop": true,
-    "outDir": "dist",
     "resolveJsonModule": true
   },
-  "include": ["./scripts", "./test"],
+  "include": ["./scripts", "./test", "hardhat.config.ts"],
   "files": ["./hardhat.config.ts"]
 }
