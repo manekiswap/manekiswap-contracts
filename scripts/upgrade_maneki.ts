@@ -4,8 +4,8 @@ async function main() {
   const factory = await ethers.getContractFactory("ManekiToken")
   console.log("Deploying proxy...")
 
-  let contractAddr = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
-  let update = await upgrades.upgradeProxy(contractAddr, factory)
+  const contractAddr = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+  const update = await upgrades.upgradeProxy(contractAddr, factory)
 
   console.log("Proxy address: ", update)
 }
