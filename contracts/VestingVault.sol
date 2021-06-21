@@ -49,7 +49,6 @@ contract VestingVault is OwnableUpgradeable {
         uint16 _vestingDurationInDays,
         uint16 _vestingCliffInDays
     ) external onlyOwner {
-        require(tokenGrants[_recipient].amount == 0, "Grant already exists, must revoke first.");
         require(_vestingCliffInDays <= 10 * 365, "Cliff greater than 10 years");
         require(_vestingDurationInDays <= 25 * 365, "Duration greater than 25 years");
 
@@ -79,7 +78,6 @@ contract VestingVault is OwnableUpgradeable {
         uint16 _vestingDurationInDays,
         uint16 _vestingCliffInDays
     ) external onlyOwner {
-        require(tokenGrants[_recipient].amount == 0, "Grant already exists, must revoke first.");
         require(_vestingCliffInDays <= 10 * 365, "Cliff greater than 10 years");
         require(_vestingDurationInDays <= 25 * 365, "Duration greater than 25 years");
 
@@ -109,7 +107,6 @@ contract VestingVault is OwnableUpgradeable {
         uint16 _vestingDurationInDays,
         uint16 _vestingCliffInDays
     ) external onlyOwner {
-        require(tokenGrants[_recipient].amount == 0, "Grant already exists, must revoke first.");
         require(_vestingCliffInDays <= 10 * 365, "Cliff greater than 10 years");
         require(_vestingDurationInDays <= 25 * 365, "Duration greater than 25 years");
 
