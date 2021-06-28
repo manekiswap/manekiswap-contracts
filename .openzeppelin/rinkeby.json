@@ -36,13 +36,13 @@
   },
   "proxies": [
     {
-      "address": "0x329F7876Fc3Fc45Afbb197727916217eD3C052b2",
-      "txHash": "0x3f6ab410e7114347e3e13c37bad9f3db5dd200763cd67c060ed65e098b072637",
+      "address": "0x7DBa9Cb61BAC2c0eD775f688Ac021191AB207dCc",
+      "txHash": "0x6fc43d4b60d047476103691c7a23aa5b40727f7ceb7e267fa60e77fb56fbb5ed",
       "kind": "transparent"
     },
     {
-      "address": "0x57d946727Ac6E0E22d8Ef7D376cbE7ca8bf30731",
-      "txHash": "0x75bd034a747bfeac43b35208b39d82d9c7b13f338be96122b700876f086a374d",
+      "address": "0xc4b812dd94F6a7035334e5618c282Ce0079de2e2",
+      "txHash": "0xc318758229ec75905e39ffce5c0d711403a70069cabd3f9fae94e68c31f60f05",
       "kind": "transparent"
     }
   ],
