@@ -3,7 +3,7 @@ import { ethers, upgrades } from "hardhat"
 async function main() {
   const factory = await ethers.getContractFactory("ManekiToken")
   console.log("Deploying proxy...")
-  const cap = ethers.utils.parseUnits("100000000")
+  const cap = ethers.utils.parseUnits("100000000") // 100M
   const contract = await upgrades.deployProxy(factory, [cap], { initializer: "initialize(uint256)" })
 
   await contract.deployed()
