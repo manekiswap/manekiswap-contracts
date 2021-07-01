@@ -4,6 +4,7 @@ pragma solidity 0.7.6;
 
 import "./interfaces/IUniswapV2Factory.sol";
 import "./UniswapV2Pair.sol";
+import "hardhat/console.sol";
 
 contract UniswapV2Factory is IUniswapV2Factory {
   address public override feeTo;
@@ -13,8 +14,13 @@ contract UniswapV2Factory is IUniswapV2Factory {
   mapping(address => mapping(address => address)) public override getPair;
   address[] public override allPairs;
 
-  constructor(address _feeToSetter) public {
+  constructor(address _feeToSetter) {
     feeToSetter = _feeToSetter;
+  }
+
+  function getBytecode(address _owner) public pure returns (bytes memory) {
+    bytes memory bytecode = type(UniswapV2Pair).creationCode;
+    return abi.encodePacked(bytecode, abi.encode(_owner));
   }
 
   function allPairsLength() external view override returns (uint256) {

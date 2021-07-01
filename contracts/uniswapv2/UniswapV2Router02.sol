@@ -9,6 +9,7 @@ import "./interfaces/IUniswapV2Router02.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IWETH.sol";
+import "hardhat/console.sol";
 
 contract UniswapV2Router02 is IUniswapV2Router02 {
   using SafeMathUniswap for uint256;
@@ -252,6 +253,7 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
     uint256 deadline
   ) external virtual override ensure(deadline) returns (uint256[] memory amounts) {
     amounts = UniswapV2Library.getAmountsOut(_factory, amountIn, path);
+    // console.log("AMOUNT: %s factory: %s", amounts, _factory);
     require(amounts[amounts.length - 1] >= amountOutMin, "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT");
     TransferHelper.safeTransferFrom(path[0], msg.sender, UniswapV2Library.pairFor(_factory, path[0], path[1]), amounts[0]);
     _swap(amounts, path, to);

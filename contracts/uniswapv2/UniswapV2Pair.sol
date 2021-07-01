@@ -2,19 +2,21 @@
 
 pragma solidity 0.7.6;
 
-import "./UniswapV2ERC20.sol";
+import "./LQToken.sol";
 import "./libraries/Math.sol";
+import "./libraries/SafeMath.sol";
 import "./libraries/UQ112x112.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IUniswapV2Callee.sol";
+import "hardhat/console.sol";
 
 interface IMigrator {
   // Return the desired amount of liquidity token that the migrator wants.
   function desiredLiquidity() external view returns (uint256);
 }
 
-contract UniswapV2Pair is UniswapV2ERC20 {
+contract UniswapV2Pair is LQToken {
   using SafeMathUniswap for uint256;
   using UQ112x112 for uint224;
 
@@ -34,6 +36,7 @@ contract UniswapV2Pair is UniswapV2ERC20 {
   uint256 public kLast; // reserve0 * reserve1, as of immediately after the most recent liquidity event
 
   uint256 private unlocked = 1;
+
   modifier lock() {
     require(unlocked == 1, "UniswapV2: LOCKED");
     unlocked = 0;
@@ -69,7 +72,8 @@ contract UniswapV2Pair is UniswapV2ERC20 {
   event Swap(address indexed sender, uint256 amount0In, uint256 amount1In, uint256 amount0Out, uint256 amount1Out, address indexed to);
   event Sync(uint112 reserve0, uint112 reserve1);
 
-  constructor() public {
+  constructor() {
+    //   constructor() public ERC20("LQT", "LQT") {
     factory = msg.sender;
   }
 
@@ -111,7 +115,7 @@ contract UniswapV2Pair is UniswapV2ERC20 {
         uint256 rootK = Math.sqrt(uint256(_reserve0).mul(_reserve1));
         uint256 rootKLast = Math.sqrt(_kLast);
         if (rootK > rootKLast) {
-          uint256 numerator = totalSupply.mul(rootK.sub(rootKLast));
+          uint256 numerator = totalSupply().mul(rootK.sub(rootKLast));
           uint256 denominator = rootK.mul(5).add(rootKLast);
           uint256 liquidity = numerator / denominator;
           if (liquidity > 0) _mint(feeTo, liquidity);
@@ -131,17 +135,10 @@ contract UniswapV2Pair is UniswapV2ERC20 {
     uint256 amount1 = balance1.sub(_reserve1);
 
     bool feeOn = _mintFee(_reserve0, _reserve1);
-    uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
+    uint256 _totalSupply = totalSupply(); // gas savings, must be defined here since totalSupply can update in _mintFee
     if (_totalSupply == 0) {
-      address migrator = IUniswapV2Factory(factory).migrator();
-      if (msg.sender == migrator) {
-        liquidity = IMigrator(migrator).desiredLiquidity();
-        require(liquidity > 0 && liquidity != uint256(-1), "Bad desired liquidity");
-      } else {
-        require(migrator == address(0), "Must not have migrator");
-        liquidity = Math.sqrt(amount0.mul(amount1)).sub(MINIMUM_LIQUIDITY);
-        _mint(address(0), MINIMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens
-      }
+      liquidity = Math.sqrt(amount0.mul(amount1)).sub(MINIMUM_LIQUIDITY);
+      //   _mint(address(0), MINIMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens
     } else {
       liquidity = Math.min(amount0.mul(_totalSupply) / _reserve0, amount1.mul(_totalSupply) / _reserve1);
     }
@@ -160,10 +157,10 @@ contract UniswapV2Pair is UniswapV2ERC20 {
     address _token1 = token1; // gas savings
     uint256 balance0 = IERC20Uniswap(_token0).balanceOf(address(this));
     uint256 balance1 = IERC20Uniswap(_token1).balanceOf(address(this));
-    uint256 liquidity = balanceOf[address(this)];
+    uint256 liquidity = balanceOf(address(this));
 
     bool feeOn = _mintFee(_reserve0, _reserve1);
-    uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
+    uint256 _totalSupply = totalSupply(); // gas savings, must be defined here since totalSupply can update in _mintFee
     amount0 = liquidity.mul(balance0) / _totalSupply; // using balances ensures pro-rata distribution
     amount1 = liquidity.mul(balance1) / _totalSupply; // using balances ensures pro-rata distribution
     require(amount0 > 0 && amount1 > 0, "UniswapV2: INSUFFICIENT_LIQUIDITY_BURNED");

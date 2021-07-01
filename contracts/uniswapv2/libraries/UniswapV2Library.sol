@@ -5,6 +5,7 @@ pragma solidity 0.7.6;
 import "../interfaces/IUniswapV2Pair.sol";
 
 import "./SafeMath.sol";
+import "hardhat/console.sol";
 
 library UniswapV2Library {
   using SafeMathUniswap for uint256;
@@ -30,7 +31,7 @@ library UniswapV2Library {
             hex"ff",
             factory,
             keccak256(abi.encodePacked(token0, token1)),
-            hex"e18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303" // init code hash
+            hex"c504c260b7a99152dcc258f5a6f9e6628e16e080e46a2cf586d8889d33f02a9c" // init code hash
           )
         )
       )
@@ -44,7 +45,8 @@ library UniswapV2Library {
     address tokenB
   ) internal view returns (uint256 reserveA, uint256 reserveB) {
     (address token0, ) = sortTokens(tokenA, tokenB);
-    (uint256 reserve0, uint256 reserve1, ) = IUniswapV2Pair(pairFor(factory, tokenA, tokenB)).getReserves();
+    address pair = pairFor(factory, tokenA, tokenB);
+    (uint256 reserve0, uint256 reserve1, ) = IUniswapV2Pair(pair).getReserves();
     (reserveA, reserveB) = tokenA == token0 ? (reserve0, reserve1) : (reserve1, reserve0);
   }
 
