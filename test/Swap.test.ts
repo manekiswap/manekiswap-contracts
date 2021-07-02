@@ -1,3 +1,4 @@
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { expectRevert } from "@openzeppelin/test-helpers"
 import { expect } from "chai"
 import { utils } from "ethers"
@@ -5,12 +6,19 @@ import { ethers } from "hardhat"
 
 import { MyERC20, UniswapV2Factory, UniswapV2Pair, UniswapV2Router02 } from "../src/typechain"
 
-describe.only("Test forking of uniswapV2", async function () {
+describe("Test forking of uniswapV2", async function () {
   const overrides = {
     gasLimit: 9999999,
   }
+  let owner: SignerWithAddress
+  let user1: SignerWithAddress
+  before(async function () {
+    const signers = await ethers.getSigners()
+    owner = signers[0]
+    user1 = signers[1]
+  })
+
   it("UniswapV2 swap token for token", async function () {
-    const [owner, user1] = await ethers.getSigners()
     const UNIFac = await ethers.getContractFactory("UniswapV2Factory")
     const uniFac = (await UNIFac.deploy(owner.address)) as UniswapV2Factory
     await uniFac.deployed()

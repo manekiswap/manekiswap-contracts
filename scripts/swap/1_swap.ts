@@ -5,19 +5,10 @@ const overrides = {
   gasLimit: 9999999,
 }
 
-async function test() {
-  const [owner, user1, user2] = await ethers.getSigners()
-  const UNIFac = await ethers.getContractFactory("UniswapV2Factory")
-  const uniFac = (await UNIFac.deploy(owner.address)) as UniswapV2Factory
-  await uniFac.deployed()
-}
-
 async function main() {
-  await swap()
-}
-
-async function swap() {
-  const [owner, user1, user2] = await ethers.getSigners()
+  const signers = await ethers.getSigners()
+  const owner = signers[0]
+  const user1 = signers[1]
   const UNIFac = await ethers.getContractFactory("UniswapV2Factory")
   const uniFac = (await UNIFac.deploy(owner.address)) as UniswapV2Factory
   await uniFac.deployed()
@@ -42,7 +33,6 @@ async function swap() {
   await token1.mint(owner.address, vv) // 100
   await token2.mint(owner.address, vv) // 100
   await token1.mint(user1.address, v.div(10)) // 10000 / 10 = 1000
-  await token2.mint(user2.address, v.div(20)) // 10000 / 20 = 500
 
   const WET_address = weth.address
   const UniswapV2Router02 = await ethers.getContractFactory("UniswapV2Router02")
@@ -74,8 +64,6 @@ async function swap() {
   //   console.log("Amount of token 2: ", (await token2.balanceOf(user2.address)).toString())
 
   await token1.connect(user1).approve(router.address, vv)
-  await token2.connect(user2).approve(router.address, vv.div(2))
-
   // TK1 -> TK2
   await router.swapExactTokensForTokens(
     ethers.utils.parseUnits("200"),
