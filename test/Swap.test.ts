@@ -38,7 +38,6 @@ describe.only("Test forking of uniswapV2", async function () {
     const router = (await UniswapV2Router02.deploy(uniFac.address, WET_address)) as UniswapV2Router02
     await router.deployed()
 
-    console.log("ADD liquidity to ", owner.address)
     await token1.approve(router.address, ethers.constants.MaxUint256)
     await token2.approve(router.address, ethers.constants.MaxUint256)
 
@@ -54,6 +53,7 @@ describe.only("Test forking of uniswapV2", async function () {
     await router
       .connect(owner)
       .addLiquidity(token1.address, token2.address, vv, vv.div(2), 0, 0, owner.address, ethers.constants.MaxUint256, overrides)
+    console.log("2 TK1 = 1 TK2")
 
     console.log("********************************************")
     const [_a, _b, _c] = await uniPair.getReserves()
@@ -63,15 +63,15 @@ describe.only("Test forking of uniswapV2", async function () {
     console.log("Reserver after AddLiquidity: ", utils.formatUnits(_a), " ", utils.formatUnits(_b), " ", _c)
 
     let token1Balance = await token1.balanceOf(user1.address)
-    const token2Balance = await token2.balanceOf(user1.address)
+    let token2Balance = await token2.balanceOf(user1.address)
 
     console.log("Before swap: Amount of user1- token 1: ", utils.formatUnits(token1Balance))
     console.log("Before swap: Amount of user1- token 2: ", utils.formatUnits(token2Balance))
 
     // TK1 -> TK2
     await router.swapExactTokensForTokens(
-      utils.parseUnits("200"),
-      utils.parseUnits("200"),
+      utils.parseUnits("100"),
+      utils.parseUnits("195"),
       [token2.address, token1.address],
       user1.address,
       ethers.constants.MaxUint256,
@@ -79,7 +79,21 @@ describe.only("Test forking of uniswapV2", async function () {
     )
 
     token1Balance = await token1.balanceOf(user1.address)
+    token2Balance = await token2.balanceOf(user1.address)
+
     console.log("After swap: Amount of user1- token 1: ", utils.formatUnits(token1Balance))
     console.log("After swap: Amount of user1- token 2: ", utils.formatUnits(token2Balance))
+
+    await expectRevert(
+      router.swapExactTokensForTokens(
+        utils.parseUnits("100"),
+        utils.parseUnits("200"),
+        [token2.address, token1.address],
+        user1.address,
+        ethers.constants.MaxUint256,
+        overrides,
+      ),
+      "INSUFFICIENT_OUTPUT_AMOUNT",
+    )
   })
 })
