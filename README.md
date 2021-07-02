@@ -1,6 +1,6 @@
 # Contracts
 
-🐈 🧾 Contracts for the maneki protocol
+🧾 for 🐈 maneki protocol
 
 ## License
 

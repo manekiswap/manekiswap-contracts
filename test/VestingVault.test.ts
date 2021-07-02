@@ -23,7 +23,11 @@ describe("Test vesting by maneki token", async function () {
   const cliff = 2
 
   before(async function () {
-    ;[owner, alice, bob] = await ethers.getSigners()
+    this.signers = await ethers.getSigners()
+    owner = this.signers[0]
+    alice = this.signers[1]
+    bob = this.signers[2]
+
     mnkFactory = await ethers.getContractFactory("ManekiToken")
     vestingFactory = await ethers.getContractFactory("VestingVault")
   })

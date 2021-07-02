@@ -7,16 +7,16 @@ import { ManekiToken } from "../src/typechain"
 
 describe("Test maneki token", async function () {
   let token: ManekiToken
-  let owner: SignerWithAddress
-  let admin: SignerWithAddress
-  let user: SignerWithAddress
-  let miner: SignerWithAddress
   let burner: SignerWithAddress
 
   const value = ethers.utils.parseEther("10")
 
+  before(async function () {
+    const signers = await ethers.getSigners()
+    burner = signers[1]
+  })
+
   beforeEach(async function () {
-    ;[owner, admin, user, miner, burner] = await ethers.getSigners()
     const factory = await ethers.getContractFactory("ManekiToken")
     const cap = ethers.utils.parseEther("30000000")
     token = (await upgrades.deployProxy(factory, [cap], { initializer: "initialize(uint256 cap_)" })) as ManekiToken
