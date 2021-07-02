@@ -71,7 +71,7 @@ async function swap() {
 
   console.log("Before swap: ")
   console.log("Amount of token 1: ", (await token1.balanceOf(user1.address)).toString())
-  console.log("Amount of token 2: ", (await token2.balanceOf(user2.address)).toString())
+  //   console.log("Amount of token 2: ", (await token2.balanceOf(user2.address)).toString())
 
   await token1.connect(user1).approve(router.address, vv)
   await token2.connect(user2).approve(router.address, vv.div(2))
@@ -87,8 +87,8 @@ async function swap() {
   )
 
   console.log("After swap: ")
-  console.log("Amount of token 1: ", (await token1.balanceOf(user1.address)).toString())
-  console.log("Amount of token 2: ", (await token2.balanceOf(user2.address)).toString())
+  console.log("Amount of user1- token 1: ", (await token1.balanceOf(user1.address)).toString())
+  console.log("Amount of user1- token 2: ", (await token2.balanceOf(user1.address)).toString())
 }
 
 main()
