@@ -57,6 +57,8 @@ describe.only("Test forking of uniswapV2", async function () {
 
     console.log("********************************************")
     const [_a, _b, _c] = await uniPair.getReserves()
+    expect(utils.formatUnits(_b)).to.equal("20000.0", "Should be equal to vv ")
+    expect(utils.formatUnits(_a)).to.equal("10000.0", "Should be equal to vv /2")
 
     console.log("Reserver after AddLiquidity: ", utils.formatUnits(_a), " ", utils.formatUnits(_b), " ", _c)
 
