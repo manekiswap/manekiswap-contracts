@@ -16,8 +16,8 @@ describe("Test forking of uniswapV2", async function () {
   let token1: MyERC20
   let token2: MyERC20
   let uniPair: UniswapV2Pair
-  const v = utils.parseUnits("10000")
-  const vv = v.mul(2)
+  const tenK = utils.parseUnits("10000")
+  const twentyK = tenK.mul(2)
   before(async function () {
     const signers = await ethers.getSigners()
     owner = signers[0]
@@ -40,10 +40,10 @@ describe("Test forking of uniswapV2", async function () {
     await weth.deployed()
 
     // Mint to account
-    await token1.mint(owner.address, vv) // 20000
-    await token2.mint(owner.address, vv) // 20000
-    await token1.mint(user1.address, v.div(10)) // 10000 / 10 = 1000
-    await token2.mint(user1.address, v.div(10)) // 10000 / 10 = 1000
+    await token1.mint(owner.address, twentyK) // 20000
+    await token2.mint(owner.address, twentyK) // 20000
+    await token1.mint(user1.address, tenK.div(10)) // 10000 / 10 = 1000
+    await token2.mint(user1.address, tenK.div(10)) // 10000 / 10 = 1000
 
     const WET_address = weth.address
     const UniswapV2Router02 = await ethers.getContractFactory("UniswapV2Router02")
@@ -67,11 +67,11 @@ describe("Test forking of uniswapV2", async function () {
   it("UniswapV2 swap addLiquidity", async function () {
     await router
       .connect(owner)
-      .addLiquidity(token1.address, token2.address, vv, vv.div(2), 0, 0, owner.address, ethers.constants.MaxUint256, overrides)
+      .addLiquidity(token1.address, token2.address, twentyK, twentyK.div(2), 0, 0, owner.address, ethers.constants.MaxUint256, overrides)
     console.log("2 TK1 = 1 TK2")
 
     console.log("********************************************")
-    const [_a, _b, _c] = await uniPair.getReserves()
+    const [_a, _b] = await uniPair.getReserves()
     expect(utils.formatUnits(_b)).to.equal("20000.0", "Should be equal to vv ")
     expect(utils.formatUnits(_a)).to.equal("10000.0", "Should be equal to vv /2")
   })
@@ -79,7 +79,7 @@ describe("Test forking of uniswapV2", async function () {
   it("UniswapV2 swap swapExactTokensForTokens success", async function () {
     await router
       .connect(owner)
-      .addLiquidity(token1.address, token2.address, vv, vv.div(2), 0, 0, owner.address, ethers.constants.MaxUint256, overrides)
+      .addLiquidity(token1.address, token2.address, twentyK, twentyK.div(2), 0, 0, owner.address, ethers.constants.MaxUint256, overrides)
     console.log("2 TK1 = 1 TK2")
 
     let token1Balance = await token1.balanceOf(user1.address)
@@ -108,7 +108,7 @@ describe("Test forking of uniswapV2", async function () {
   it("UniswapV2 swap swapExactTokensForTokens Revert", async function () {
     await router
       .connect(owner)
-      .addLiquidity(token1.address, token2.address, vv, vv.div(2), 0, 0, owner.address, ethers.constants.MaxUint256, overrides)
+      .addLiquidity(token1.address, token2.address, twentyK, twentyK.div(2), 0, 0, owner.address, ethers.constants.MaxUint256, overrides)
     console.log("2 TK1 = 1 TK2")
 
     await expectRevert(
@@ -122,5 +122,12 @@ describe("Test forking of uniswapV2", async function () {
       ),
       "INSUFFICIENT_OUTPUT_AMOUNT",
     )
+  })
+
+  it.only("Test amount in out", async function () {
+    const amountOut = utils.parseUnits("100")
+    const amountIn = await router.getAmountIn(amountOut, tenK, tenK.sub(amountOut))
+
+    console.log("Amount in: ", utils.formatUnits(amountIn))
   })
 })
