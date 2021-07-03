@@ -2,7 +2,6 @@
 
 pragma solidity 0.7.6;
 
-import "./LQToken.sol";
 import "./libraries/Math.sol";
 import "./libraries/SafeMath.sol";
 import "./libraries/UQ112x112.sol";
@@ -10,13 +9,9 @@ import "./interfaces/IERC20.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IUniswapV2Callee.sol";
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-interface IMigrator {
-  // Return the desired amount of liquidity token that the migrator wants.
-  function desiredLiquidity() external view returns (uint256);
-}
-
-contract UniswapV2Pair is LQToken {
+contract UniswapV2Pair is ERC20 {
   using SafeMathUniswap for uint256;
   using UQ112x112 for uint224;
 
@@ -72,7 +67,8 @@ contract UniswapV2Pair is LQToken {
   event Swap(address indexed sender, uint256 amount0In, uint256 amount1In, uint256 amount0Out, uint256 amount1Out, address indexed to);
   event Sync(uint112 reserve0, uint112 reserve1);
 
-  constructor() {
+  //   constructor() {
+  constructor() ERC20("LiquidityToken", "LQT") {
     //   constructor() public ERC20("LQT", "LQT") {
     factory = msg.sender;
   }

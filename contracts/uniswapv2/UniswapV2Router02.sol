@@ -30,7 +30,7 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
     _;
   }
 
-  constructor(address factory_, address WETH_) public {
+  constructor(address factory_, address WETH_) {
     _factory = factory_;
     _WETH = WETH_;
   }
