@@ -1,6 +1,7 @@
 # Contracts
 
-🧾 for 🐈 maneki protocol
+Maneki protocol is Non-custodial dynamic automated market maker.
+Maneki Tackling Capital Inefficiency and fine-tuned control to liquidity providers
 
 ## License
 
