@@ -23,6 +23,9 @@ describe.only("Test access control", async function () {
   const durationInDays = 10
   const cliff = 2
 
+  let minerROLE: string
+  let defaultAdminROLE: string
+  let pauseROLE: string
   before(async function () {
     this.signers = await ethers.getSigners()
     owner = this.signers[0]
@@ -46,13 +49,13 @@ describe.only("Test access control", async function () {
     await vault.deployed()
 
     await maneki.mint(owner.address, initSupply)
+
+    minerROLE = await maneki.MINTER_ROLE()
+    defaultAdminROLE = await maneki.DEFAULT_ADMIN_ROLE()
+    pauseROLE = await maneki.PAUSER_ROLE()
   })
 
   it("owner should be default admin role", async function () {
-    const minerROLE = await maneki.MINTER_ROLE()
-    const defaultAdminROLE = await maneki.DEFAULT_ADMIN_ROLE()
-    const pauseROLE = await maneki.PAUSER_ROLE()
-
     const isOwnerHasMinnerRole = await maneki.hasRole(minerROLE, owner.address)
     expect(isOwnerHasMinnerRole).true
 
@@ -62,12 +65,14 @@ describe.only("Test access control", async function () {
     const isPauseRole = await maneki.hasRole(pauseROLE, owner.address)
     expect(isPauseRole).true
 
-    expect(await maneki.hasRole(defaultAdminROLE, alice.address)).true
-    await maneki.grantRole(defaultAdminROLE, alice.address)
-    expect(await maneki.hasRole(defaultAdminROLE, alice.address)).true
+    expect(await maneki.hasRole(defaultAdminROLE, alice.address)).false
+  })
 
-    const a = await maneki.getRoleAdmin(minerROLE)
-    console.log("Admin of miner ", a, " owner: ", owner.address)
-    // expect(await maneki.hasRole(defaultAdminROLE, owner.address)).false
+  it("owner should be able to grand DEFAULT admin role", async function () {
+    await maneki.grantRole(defaultAdminROLE, alice.address)
+    await maneki.revokeRole(defaultAdminROLE, owner.address)
+
+    expect(await maneki.hasRole(defaultAdminROLE, alice.address)).true
+    expect(await maneki.hasRole(defaultAdminROLE, owner.address)).false
   })
 })
