@@ -8,7 +8,7 @@ import { ethers, upgrades } from "hardhat"
 import { ManekiToken, VestingVault } from "../src/typechain"
 import { duration, increase } from "./util"
 
-describe.only("Test access control", async function () {
+describe("Test access control", async function () {
   let maneki: ManekiToken
   let owner: SignerWithAddress
   let alice: SignerWithAddress
