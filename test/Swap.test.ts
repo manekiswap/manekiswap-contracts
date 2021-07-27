@@ -124,7 +124,7 @@ describe("Test forking of uniswapV2", async function () {
     )
   })
 
-  it.only("Test amount in out", async function () {
+  it("Test amount in out", async function () {
     await router
       .connect(owner)
       .addLiquidity(token1.address, token2.address, twentyK, twentyK.div(2), 0, 0, owner.address, ethers.constants.MaxUint256, overrides)
