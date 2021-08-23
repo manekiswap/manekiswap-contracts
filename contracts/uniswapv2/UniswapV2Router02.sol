@@ -14,8 +14,8 @@ import "hardhat/console.sol";
 contract UniswapV2Router02 is IUniswapV2Router02 {
   using SafeMathUniswap for uint256;
 
-  address _factory;
-  address _WETH;
+  address private _factory;
+  address private _WETH;
 
   function factory() external view override returns (address) {
     return _factory;
