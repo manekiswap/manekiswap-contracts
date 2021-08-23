@@ -22,7 +22,8 @@ library UniswapV2Library {
     address factory,
     address tokenA,
     address tokenB
-  ) internal pure returns (address pair) {
+  ) internal view returns (address pair) {
+    console.log(">>>>>>>>> FACTORY : %s", factory);
     (address token0, address token1) = sortTokens(tokenA, tokenB);
     pair = address(
       uint256(

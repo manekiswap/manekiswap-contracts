@@ -8,8 +8,8 @@ import "./libraries/SafeMath.sol";
 contract UniswapV2ERC20 is IUniswapV2ERC20 {
   using SafeMathUniswap for uint256;
 
-  string public constant override name = "SushiSwap LP Token";
-  string public constant override symbol = "SLP";
+  string public constant override name = "Maneki LP Token";
+  string public constant override symbol = "MLP";
   uint8 public constant override decimals = 18;
   uint256 public override totalSupply;
   mapping(address => uint256) public override balanceOf;
