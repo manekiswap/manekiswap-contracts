@@ -11,7 +11,6 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
-import "hardhat/console.sol";
 
 contract VestingVault is OwnableUpgradeable {
   using SafeMath for uint256;

@@ -8,7 +8,6 @@ import "./libraries/UQ112x112.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IUniswapV2Factory.sol";
 import "./interfaces/IUniswapV2Callee.sol";
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract UniswapV2Pair is ERC20 {

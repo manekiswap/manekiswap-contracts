@@ -4,7 +4,6 @@ pragma solidity 0.7.6;
 
 import "./interfaces/IUniswapV2Factory.sol";
 import "./UniswapV2Pair.sol";
-import "hardhat/console.sol";
 
 contract UniswapV2Factory is IUniswapV2Factory {
   address public override feeTo;
@@ -32,7 +31,6 @@ contract UniswapV2Factory is IUniswapV2Factory {
   }
 
   function createPair(address tokenA, address tokenB) external override returns (address pair) {
-    console.log(">>>>>>>>>>>>>>> CREATING PAIRL %s-%s \n", tokenA, tokenB);
     require(tokenA != tokenB, "UniswapV2: IDENTICAL_ADDRESSES");
     (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
     require(token0 != address(0), "UniswapV2: ZERO_ADDRESS");
@@ -47,7 +45,6 @@ contract UniswapV2Factory is IUniswapV2Factory {
     getPair[token1][token0] = pair; // populate mapping in the reverse direction
     allPairs.push(pair);
 
-    console.log(">>>>>>>>>>>>>>> CREATED PAIR:%s: %s-%s", pair, tokenA, tokenB);
     emit PairCreated(token0, token1, pair, allPairs.length);
   }
 

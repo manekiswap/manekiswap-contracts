@@ -21,7 +21,7 @@ describe("Test forking of uniswapV2", async function () {
   before(async function () {
     const signers = await ethers.getSigners()
     owner = signers[0]
-    user1 = signers[1 . ] 
+    user1 = signers[1]
   })
 
   beforeEach(async function () {
