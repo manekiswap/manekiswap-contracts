@@ -5,7 +5,6 @@ pragma solidity 0.7.6;
 import "../interfaces/IUniswapV2Pair.sol";
 
 import "./SafeMath.sol";
-import "hardhat/console.sol";
 
 library UniswapV2Library {
   using SafeMathUniswap for uint256;
@@ -22,7 +21,7 @@ library UniswapV2Library {
     address factory,
     address tokenA,
     address tokenB
-  ) internal pure returns (address pair) {
+  ) internal view returns (address pair) {
     (address token0, address token1) = sortTokens(tokenA, tokenB);
     pair = address(
       uint256(

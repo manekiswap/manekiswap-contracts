@@ -15,7 +15,8 @@
     "kovan:deploy": "hardhat run --network rinkeby scripts/deploy_maneki.ts",
     "kovan:verify": "hardhat run --network rinkeby etherscan-verify ",
     "local:deploy": "hardhat run --network localhost scripts/deploy_maneki.ts",
-    "script": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/swap/1_swap.ts"
+    "deploy_swap": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/deploy_swap.ts",
+    "deploy_pair": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/create_pair.ts"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "2.0.2",
