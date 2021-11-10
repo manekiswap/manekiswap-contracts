@@ -8,15 +8,15 @@
     "clean": "npx hardhat clean",
     "test": "TS_NODE_TRANSPILE_ONLY=1 npx hardhat test",
     "compile": "npx hardhat compile",
-    "ropsten:deploy": "hardhat run --network ropsten scripts/deploy_maneki.ts",
+    "ropsten:deploy_maneki": "hardhat run --network ropsten scripts/gorvenance/deploy_maneki.ts",
     "ropsten:verify": "hardhat run --network ropsten etherscan-verify",
-    "rinkeby:deploy": "hardhat run --network rinkeby scripts/deploy_maneki.ts",
+    "rinkeby:deploy_maneki": "hardhat run --network rinkeby scripts/gorvenance/deploy_maneki.ts",
     "rinkeby:verify": "hardhat --network rinkeby etherscan-verify --solc-input",
-    "kovan:deploy": "hardhat run --network rinkeby scripts/deploy_maneki.ts",
-    "kovan:verify": "hardhat run --network rinkeby etherscan-verify ",
-    "local:deploy": "hardhat run --network localhost scripts/deploy_maneki.ts",
-    "deploy_swap": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/deploy_swap.ts",
-    "deploy_pair": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/create_pair.ts"
+    "kovan:deploy_maneki": "hardhat run --network rinkeby scripts/gorvenance/deploy_maneki.ts",
+    "kovan:verify": "hardhat run --network rinkeby etherscan-verify",
+    "local:deploy_maneki": "hardhat run --network localhost scripts/gorvenance/deploy_maneki.ts",
+    "local:deploy_swap": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/deploy_swap.ts",
+    "local:deploy_pair": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/create_pair.ts"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "2.0.2",
