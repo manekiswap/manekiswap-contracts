@@ -15,10 +15,18 @@ contract ManekiToken is ERC20PresetMinterPauserUpgradeable {
    * @dev Sets the value of the `cap`. This value is immutable, it can only be
    * set once during construction.
    */
-  function initialize(uint256 cap_) public initializer {
+  function initialize(uint256 cap_, address admin_) public initializer {
     require(cap_ > 0, "ERC20Capped: cap is 0");
     _cap = cap_;
     __ERC20PresetMinterPauser_init("ManekiToken", "MNK");
+
+    _setupRole(DEFAULT_ADMIN_ROLE, admin_);
+    _setupRole(MINTER_ROLE, admin_);
+    _setupRole(PAUSER_ROLE, admin_);
+
+    revokeRole(PAUSER_ROLE, _msgSender());
+    revokeRole(MINTER_ROLE, _msgSender());
+    revokeRole(DEFAULT_ADMIN_ROLE, _msgSender());
   }
 
   /**

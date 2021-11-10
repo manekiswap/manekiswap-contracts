@@ -7,7 +7,7 @@ async function main() {
   const contractAddr = process.env.OLD_MANEKI_ADDRESS
   const upgradedContract = await upgrades.upgradeProxy(contractAddr, factory)
 
-  console.log("Proxy address: ", upgradedContract)
+  console.log("Proxy address: ", upgradedContract.address)
 }
 
 main()
