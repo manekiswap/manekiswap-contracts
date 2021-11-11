@@ -1,6 +1,6 @@
-import { ethers, upgrades } from "hardhat"
+import { ethers } from "hardhat"
 
-import { ManekiToken, VestingVault } from "../../src/typechain"
+import { ManekiToken } from "../../src/typechain"
 
 async function main() {
   const signers = await ethers.getSigners()
@@ -17,14 +17,6 @@ async function main() {
   await manekiContract.deployed()
   console.log("Proxy maneki address: ", manekiContract.address)
 
-  const vestingFactory = await ethers.getContractFactory("VestingVault")
-  const vestingContract = (await upgrades.deployProxy(vestingFactory, [manekiContract.address], {
-    initializer: "initialize(address)",
-  })) as VestingVault
-
-  await vestingContract.deployed()
-  console.log("Proxy vesting address:  ", vestingContract.address)
-
   const defaultAdminROLE = await manekiContract.DEFAULT_ADMIN_ROLE()
   const minterROLE = await manekiContract.MINTER_ROLE()
   const pauseROLE = await manekiContract.PAUSER_ROLE()
@@ -38,9 +30,6 @@ async function main() {
   await manekiContract.revokeRole(pauseROLE, owner.address)
   await manekiContract.revokeRole(minterROLE, owner.address)
   await manekiContract.revokeRole(defaultAdminROLE, owner.address)
-
-  console.log("Transfering vesting vault to multiSig")
-  await vestingContract.transferOwnership(multisig_address)
 }
 
 main()
