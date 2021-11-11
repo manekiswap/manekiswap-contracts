@@ -38,6 +38,9 @@ async function main() {
   await manekiContract.revokeRole(pauseROLE, owner.address)
   await manekiContract.revokeRole(minterROLE, owner.address)
   await manekiContract.revokeRole(defaultAdminROLE, owner.address)
+
+  console.log("Transfering vesting vault to multiSig")
+  await vestingContract.transferOwnership(multisig_address)
 }
 
 main()
