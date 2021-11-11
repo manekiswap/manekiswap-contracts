@@ -19,7 +19,7 @@ describe("Test maneki token", async function () {
   beforeEach(async function () {
     const factory = await ethers.getContractFactory("ManekiToken")
     const maxSupply = ethers.utils.parseEther("300000000")
-    token = (await upgrades.deployProxy(factory, [maxSupply], { initializer: "initialize(uint256 cap_)" })) as ManekiToken
+    token = (await factory.deploy(maxSupply)) as ManekiToken
     await token.deployed()
   })
 

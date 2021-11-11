@@ -34,7 +34,7 @@ describe("Test vesting by maneki token", async function () {
   })
 
   beforeEach(async function () {
-    maneki = (await upgrades.deployProxy(mnkFactory, [maxSupply], { initializer: "initialize(uint256 cap_)" })) as ManekiToken
+    maneki = (await mnkFactory.deploy(maxSupply)) as ManekiToken
     await maneki.deployed()
 
     vault = (await upgrades.deployProxy(vestingFactory, [maneki.address], { initializer: "initialize(address)" })) as VestingVault

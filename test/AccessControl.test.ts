@@ -30,8 +30,10 @@ describe("Test access control", async function () {
   })
 
   beforeEach(async function () {
-    maneki = (await upgrades.deployProxy(mnkFactory, [maxSupply], { initializer: "initialize(uint256 cap_)" })) as ManekiToken
+    maneki = (await mnkFactory.deploy(maxSupply)) as ManekiToken
     await maneki.deployed()
+
+    maneki = maneki.connect(owner)
 
     vault = (await upgrades.deployProxy(vestingFactory, [maneki.address], { initializer: "initialize(address)" })) as VestingVault
     await vault.deployed()

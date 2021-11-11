@@ -9,9 +9,7 @@ async function main() {
   console.log("Deploying proxy...")
 
   const maxSupply = ethers.utils.parseUnits("300000000") // 300M
-  const manekiContract = (await upgrades.deployProxy(factory, [maxSupply, multisig_address], {
-    initializer: "initialize(uint256, address)",
-  })) as ManekiToken
+  const manekiContract = (await factory.deploy(maxSupply)) as ManekiToken
 
   await manekiContract.deployed()
   console.log("Proxy maneki address: ", manekiContract.address)
@@ -22,7 +20,8 @@ async function main() {
   })) as VestingVault
 
   await vestingContract.deployed()
-  console.log("Proxy vesting address: ", vestingContract.address)
+  console.log("Proxy vesting address:  ", vestingContract.address)
+  console.log("Multisig address:  ", multisig_address)
 }
 
 main()

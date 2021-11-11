@@ -2,11 +2,10 @@
 pragma solidity 0.7.6;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/presets/ERC20PresetMinterPauserUpgradeable.sol";
+import "@openzeppelin/contracts/presets/ERC20PresetMinterPauser.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-contract ManekiToken is ERC20PresetMinterPauserUpgradeable {
+contract ManekiToken is ERC20PresetMinterPauser {
   using SafeMath for uint256;
 
   uint256 private _cap;
@@ -15,18 +14,9 @@ contract ManekiToken is ERC20PresetMinterPauserUpgradeable {
    * @dev Sets the value of the `cap`. This value is immutable, it can only be
    * set once during construction.
    */
-  function initialize(uint256 cap_, address admin_) public initializer {
+  constructor(uint256 cap_) ERC20PresetMinterPauser("ManekiToken", "MNK") {
     require(cap_ > 0, "ERC20Capped: cap is 0");
     _cap = cap_;
-    __ERC20PresetMinterPauser_init("ManekiToken", "MNK");
-
-    _setupRole(DEFAULT_ADMIN_ROLE, admin_);
-    _setupRole(MINTER_ROLE, admin_);
-    _setupRole(PAUSER_ROLE, admin_);
-
-    revokeRole(PAUSER_ROLE, _msgSender());
-    revokeRole(MINTER_ROLE, _msgSender());
-    revokeRole(DEFAULT_ADMIN_ROLE, _msgSender());
   }
 
   /**
