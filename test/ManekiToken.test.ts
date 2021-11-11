@@ -18,8 +18,8 @@ describe("Test maneki token", async function () {
 
   beforeEach(async function () {
     const factory = await ethers.getContractFactory("ManekiToken")
-    const cap = ethers.utils.parseEther("30000000")
-    token = (await upgrades.deployProxy(factory, [cap], { initializer: "initialize(uint256 cap_)" })) as ManekiToken
+    const maxSupply = ethers.utils.parseEther("300000000")
+    token = (await factory.deploy(maxSupply)) as ManekiToken
     await token.deployed()
   })
 
@@ -32,7 +32,7 @@ describe("Test maneki token", async function () {
   })
 
   it("can not mint more than cap", async function () {
-    const mintValue = ethers.utils.parseEther("31000000")
+    const mintValue = ethers.utils.parseEther("310000000")
     await expectRevert(token.mint(burner.address, mintValue), "ERC20Capped: cap exceeded")
   })
 

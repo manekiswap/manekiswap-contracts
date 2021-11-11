@@ -15,8 +15,9 @@ describe("Test vesting by maneki token", async function () {
   let vault: VestingVault
   let mnkFactory: ContractFactory
   let vestingFactory: ContractFactory
-  const cap = ethers.utils.parseUnits("100000000") // 100M
+
   const initSupply = ethers.utils.parseUnits("15000000") // 15M
+  const maxSupply = ethers.utils.parseUnits("300000000") // 300M
 
   const granted = "1000000.0"
   const durationInDays = 10
@@ -33,15 +34,10 @@ describe("Test vesting by maneki token", async function () {
   })
 
   beforeEach(async function () {
-    maneki = (await upgrades.deployProxy(mnkFactory, [cap], {
-      initializer: "initialize(uint256 cap_)",
-    })) as ManekiToken
+    maneki = (await mnkFactory.deploy(maxSupply)) as ManekiToken
     await maneki.deployed()
 
-    vault = (await upgrades.deployProxy(vestingFactory, [maneki.address], {
-      initializer: "initialize(address)",
-    })) as VestingVault
-
+    vault = (await upgrades.deployProxy(vestingFactory, [maneki.address], { initializer: "initialize(address)" })) as VestingVault
     await vault.deployed()
 
     await maneki.mint(owner.address, initSupply)
@@ -54,8 +50,8 @@ describe("Test vesting by maneki token", async function () {
   it("should allow to GRANT token from vesting vault if approved", async function () {
     await maneki.approve(vault.address, initSupply)
     await vault.addTokenGrant(alice.address, initSupply.div(2), 10, 10)
-    const grantForAlice = await vault.getGrantAmount(alice.address)
 
+    const grantForAlice = await vault.getGrantAmount(alice.address)
     expect(ethers.utils.formatUnits(grantForAlice)).to.equal("7500000.0")
 
     const grantForBob = await vault.getGrantAmount(bob.address)
@@ -65,12 +61,13 @@ describe("Test vesting by maneki token", async function () {
   it("should allow to REVOKE granted", async function () {
     await maneki.approve(vault.address, initSupply)
     await vault.addTokenGrant(alice.address, initSupply.div(2), 10, 10)
-    let grantForAlice = await vault.getGrantAmount(alice.address)
 
+    let grantForAlice = await vault.getGrantAmount(alice.address)
     expect(ethers.utils.formatUnits(grantForAlice)).to.equal("7500000.0")
 
     await vault.revokeTokenGrant(alice.address)
     grantForAlice = await vault.getGrantAmount(alice.address)
+
     expect(ethers.utils.formatUnits(grantForAlice)).to.equal("0.0")
   })
 

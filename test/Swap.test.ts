@@ -7,9 +7,8 @@ import { ethers } from "hardhat"
 import { MyERC20, UniswapV2Factory, UniswapV2Pair, UniswapV2Router02 } from "../src/typechain"
 
 describe("Test forking of uniswapV2", async function () {
-  const overrides = {
-    gasLimit: 9999999,
-  }
+  const overrides = { gasLimit: 9999999 }
+
   let owner: SignerWithAddress
   let user1: SignerWithAddress
   let router: UniswapV2Router02
@@ -18,6 +17,7 @@ describe("Test forking of uniswapV2", async function () {
   let uniPair: UniswapV2Pair
   const tenK = utils.parseUnits("10000")
   const twentyK = tenK.mul(2)
+
   before(async function () {
     const signers = await ethers.getSigners()
     owner = signers[0]
@@ -30,6 +30,7 @@ describe("Test forking of uniswapV2", async function () {
     await uniFac.deployed()
 
     console.log("PAIR code hash", (await uniFac.pairCodeHash()).toString())
+
     // Deploy token
     const fac1 = await ethers.getContractFactory("MyERC20")
     token1 = (await fac1.deploy("TOKEN1", "TK1")) as MyERC20
