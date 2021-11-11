@@ -3,7 +3,7 @@ import { ethers, upgrades } from "hardhat"
 import { ManekiToken, VestingVault } from "../../src/typechain"
 
 async function main() {
-  const multisig_address = process.env.MULTISIG_ADDRESS ?? ""
+  const multisig_address = process.env.MULTISIG_ADDRESS || ""
 
   const factory = await ethers.getContractFactory("ManekiToken")
   console.log("Deploying proxy...")

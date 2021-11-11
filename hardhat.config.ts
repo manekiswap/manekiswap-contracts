@@ -9,11 +9,11 @@ import "hardhat-deploy"
 
 import { HardhatUserConfig } from "hardhat/types"
 
-const INFURA_KEY = process.env.INFURA_KEY ?? ""
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY ?? ""
+const INFURA_KEY = process.env.INFURA_KEY || ""
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ""
 
 const accounts = {
-  mnemonic: process.env.MNEMONIC ?? "test test test test test test test test test test test junk",
+  mnemonic: process.env.MNEMONIC || "test test test test test test test test test test test junk",
 }
 
 const config: HardhatUserConfig = {
