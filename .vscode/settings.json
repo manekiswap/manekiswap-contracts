@@ -8,7 +8,7 @@
   "eslint.format.enable": true,
   "eslint.validate": ["javascript", "typescript"],
   "solidity.linter": "solhint",
-  "solidity.compileUsingRemoteVersion": "v0.7.6+commit.7338295f",
+  "solidity.compileUsingRemoteVersion": "v0.7.6",
   "solidity.packageDefaultDependenciesContractsDirectory": "",
   "solidity.enabledAsYouTypeCompilationErrorCheck": true,
   "solidity.validationDelay": 1500,
@@ -16,5 +16,5 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
-  },
+  }
 }
