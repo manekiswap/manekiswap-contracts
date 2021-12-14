@@ -686,10 +686,10 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-3.4.1-solc-0.7.tgz#782b147f77d3b1ed187701d4f78093e561e47248"
   integrity sha512-27rj1U69XYH5XIvTFkofrfYnvg4P6PWSijH+4jiqruZvZvnGf/wdTbpJr6AfZ9fU0KWNtRa2wPo8GfJllTxyfA==
 
-"@openzeppelin/contracts@3.4.1-solc-0.7":
-  version "3.4.1-solc-0.7"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.1-solc-0.7.tgz#8db23599e7f877b4405432841359bb1d47ad25c3"
-  integrity sha512-mOFoETsis0ODEbvYOniritn3Mpj6L3aafmBDdJI3ZYJNyMo4pfZBmNBU/L881xbw7iGDc3l2jF+XeLUwoY6IRw==
+"@openzeppelin/contracts@3.4.2":
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.2.tgz#d81f786fda2871d1eb8a8c5a73e455753ba53527"
+  integrity sha512-z0zMCjyhhp4y7XKAcDAi3Vgms4T2PstwBdahiO0+9NaGICQKjynK3wduSRplTgk4LXmoO1yfDGO5RbjKYxtuxA==
 
 "@openzeppelin/hardhat-upgrades@1.12.0":
   version "1.12.0"
