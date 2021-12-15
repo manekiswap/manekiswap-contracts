@@ -1,7 +1,7 @@
 import { utils } from "ethers"
 import { ethers } from "hardhat"
 
-import { IUniswapV2Factory, IUniswapV2Pair, MyERC20, UniswapV2Factory, UniswapV2Pair, UniswapV2Router02 } from "../src/typechain"
+import { IUniswapV2Factory, IUniswapV2Pair, MyERC20, UniswapV2Router02 } from "../src/typechain"
 
 //Wrapped Ether: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
 const FAC_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"

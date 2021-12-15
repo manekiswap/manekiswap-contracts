@@ -1,7 +1,6 @@
-import { utils } from "ethers"
 import { ethers } from "hardhat"
 
-import { IUniswapV2Factory, UniswapV2Factory, UniswapV2Pair, UniswapV2Router02 } from "../src/typechain"
+import { UniswapV2Factory, UniswapV2Router02 } from "../src/typechain"
 
 //Wrapped Ether: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
 async function main() {
