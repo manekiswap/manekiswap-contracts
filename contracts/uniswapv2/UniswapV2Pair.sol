@@ -66,9 +66,7 @@ contract UniswapV2Pair is ERC20 {
   event Swap(address indexed sender, uint256 amount0In, uint256 amount1In, uint256 amount0Out, uint256 amount1Out, address indexed to);
   event Sync(uint112 reserve0, uint112 reserve1);
 
-  //   constructor() {
   constructor() ERC20("LiquidityToken", "LQT") {
-    //   constructor() public ERC20("LQT", "LQT") {
     factory = msg.sender;
   }
 

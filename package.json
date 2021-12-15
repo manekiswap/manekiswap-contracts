@@ -8,9 +8,9 @@
     "clean": "npx hardhat clean",
     "test": "TS_NODE_TRANSPILE_ONLY=1 npx hardhat test",
     "compile": "npx hardhat compile",
-    "ropsten:verify": "hardhat run --network ropsten etherscan-verify",
     "rinkeby:verify": "hardhat --network rinkeby etherscan-verify --solc-input",
-    "kovan:verify": "hardhat run --network rinkeby etherscan-verify",
+    "matic:deploy_swap": "TS_NODE_TRANSPILE_ONLY=1 hardhat --network matic run scripts/deploy_swap.ts",
+    "mumbai:deploy_swap": "TS_NODE_TRANSPILE_ONLY=1 hardhat --network mumbai run scripts/deploy_swap.ts",
     "local:deploy_swap": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/deploy_swap.ts",
     "local:deploy_pair": "TS_NODE_TRANSPILE_ONLY=1 hardhat run --network localhost scripts/create_pair.ts"
   },
