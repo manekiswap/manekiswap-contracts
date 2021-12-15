@@ -51,7 +51,7 @@ const config: HardhatUserConfig = {
       chainId: 4,
     },
     matic: {
-      url: "https://polygon-mainnet.g.alchemy.com/v2/5cbSNIOfi-VpAC7P4VUUj2hsYj58_sOM",
+      url: `https://polygon-mainnet.g.alchemy.com/v2/${POLYGONSCAN_API_KEY}`,
       accounts,
       chainId: 137,
       live: true,
@@ -59,7 +59,7 @@ const config: HardhatUserConfig = {
       saveDeployments: true,
     },
     mumbai: {
-      url: "https://polygon-mumbai.g.alchemy.com/v2/5cbSNIOfi-VpAC7P4VUUj2hsYj58_sOM",
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${POLYGONSCAN_API_KEY}`,
       accounts,
       chainId: 80001,
       live: true,
